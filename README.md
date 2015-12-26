@@ -1,1 +1,1 @@
-# plugin.video.wg
+# plugin.video.ftvideos
