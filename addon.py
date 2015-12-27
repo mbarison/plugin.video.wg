@@ -10,11 +10,11 @@ api = WowGirls()
 
 @plugin.route('/')
 def main_menu():
- items = [{'label': 'Show Movies', 'path': plugin.url_for('show_galleries',url='category/movies')},
+    items = [{'label': 'Show Movies', 'path': plugin.url_for('show_galleries',url='category/movies')},
           {'label': 'Show Trailers', 'path': plugin.url_for('show_galleries',url='category/trailers')},
           {'label': 'Show Tags', 'path': plugin.url_for('show_tags',url='tags')},
- ]
- return items
+          ]
+    return items
 
 @plugin.route('/tags/<url>')
 def show_tags(url):
