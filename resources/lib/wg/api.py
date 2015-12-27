@@ -8,7 +8,7 @@
 
 '''
 from scraper import (get_girls, get_videos, get_girl_metadata,
-                     get_video_metadata)
+                     get_video_metadata, get_tags)
 from datetime import datetime
 import re
 
@@ -26,9 +26,31 @@ class WowGirls(object):
 
         return [Girl(**info) for info in get_girls(url)]
 
+    def get_tags(self,url):
+        '''Returns a list of tags available on the website.'''
+
+        return [Tag(**info) for info in get_tags(url)] 
+
+class Tag(object):
+    '''Object representing a WowGirls tag.'''
+    def __init__(self, url, name=None, topics=None):
+        self.url = url
+        self._name = name
+        self._topics = topics
+
+    def __repr__(self):
+        return u"<Tag '%s'>" % self.name
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def topics(self):
+        return self._topics
 
 class Girl(object):
-    '''Object representing a FTV model.'''
+    '''Object representing a WowGirls video.'''
 
     def __init__(self, url, name=None, thumbnail=None):
         self.url = url

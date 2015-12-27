@@ -9,13 +9,13 @@ import re
 import os
 from urllib import unquote
 from urllib2 import urlopen
-from urlparse import urljoin
+from urlparse import urljoin, urlsplit
 from BeautifulSoup import BeautifulSoup as BS
 
-BASE_URLS = ["http://www.wowporngirls.com/category","http://www.wowgirlsblog.com/category"]
+BASE_URLS = ["http://www.wowporngirls.com","http://www.wowgirlsblog.com"]
 def _urls(path):
     '''Returns a full url for the given path'''            
-    return [os.path.join(i, path) for i in BASE_URLS]
+    return [urljoin(i, path) for i in BASE_URLS]
 
 
 def get(url):
@@ -30,6 +30,32 @@ def _html(url):
     '''Downloads the resource at the given url and parses via BeautifulSoup'''
     return BS(get(url), convertEntities=BS.HTML_ENTITIES)
     
+def get_tags(url):
+    '''Returns a list of tags for the website.''' 
+
+    # subjs will contain some duplicates so we will key on url
+    items = []
+    urls = set()
+
+    for u in _urls(url):
+        print "Opening", u
+        html = _html(u)
+        
+        subjs = html.find("ul",  {'class':'wp-tag-cloud'}).findAll('li')
+
+        for subj in subjs:
+            lnk = subj.a
+            _url = unquote(lnk['href'])
+            if _url not in urls:
+                urls.add(_url)
+                items.append({
+                    'name': "%s (%s)" % (lnk.text, urlsplit(u).netloc),
+                    'url': _url,
+                })
+
+    return items
+
+
 def get_girls(url):
     '''Returns a list of girls for the website. Each girl is a dict with
     keys of 'name' and 'url'.
@@ -46,6 +72,10 @@ def get_girls(url):
         subjs = html.findAll('li', {'class' :"border-radius-5 box-shadow"})
 
         for subj in subjs:
+            _runtime = subj.find('div', {'class':"time-infos"}).text
+            if not ":" in _runtime:
+                continue
+
             lnk = subj.a
             _url = unquote(lnk['href'])
             if _url not in urls:

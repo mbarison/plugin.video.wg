@@ -10,10 +10,29 @@ api = WowGirls()
 
 @plugin.route('/')
 def main_menu():
- items = [{'label': 'Show Movies', 'path': plugin.url_for('show_galleries',url='movies')},
-          {'label': 'Show Trailers', 'path': plugin.url_for('show_galleries',url='trailers')},
+ items = [{'label': 'Show Movies', 'path': plugin.url_for('show_galleries',url='category/movies')},
+          {'label': 'Show Trailers', 'path': plugin.url_for('show_galleries',url='category/trailers')},
+          {'label': 'Show Tags', 'path': plugin.url_for('show_tags',url='tags')},
  ]
  return items
+
+@plugin.route('/tags/<url>')
+def show_tags(url):
+    tags = api.get_tags(url)
+
+    print "TAGS", len(tags)
+
+    items = [{
+        'label': tag.name,
+        'path': plugin.url_for('show_galleries', url=tag.url),
+    } for tag in tags]
+    
+    print "ITEMS", len(items)
+   
+    print items
+
+    sorted_items = sorted(items, key=lambda item: item['label'])
+    return sorted_items
 
 @plugin.route('/<url>')
 def show_galleries(url):
@@ -35,8 +54,6 @@ def show_galleries(url):
     
     print "ITEMS", len(items)
    
-    #sorted_items = sorted(items, key=lambda item: item['date'])
-    #return sorted_items
     return items
 
 
