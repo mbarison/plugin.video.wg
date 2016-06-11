@@ -12,7 +12,7 @@ api = WowGirls()
 def main_menu():
     items = [{'label': 'Show Movies', 'path': plugin.url_for('show_galleries',url='category/movies')},
           {'label': 'Show Trailers', 'path': plugin.url_for('show_galleries',url='category/trailers')},
-          {'label': 'Show Tags', 'path': plugin.url_for('show_tags',url='tags')},
+          {'label': 'Show Models', 'path': plugin.url_for('show_tags',url='models-list')},
           ]
     return items
 
@@ -81,8 +81,8 @@ def play_video(url):
     url = video.video_url
     plugin.log.info('Playing url: %s' % url)
     plugin.set_resolved_url(url)
-    if platform.machine() == 'x86_64':
-        subprocess.call(["vlc",url])
+    #if platform.machine() == 'x86_64':
+    #    subprocess.call(["vlc",url])
 
 if __name__ == '__main__':
     plugin.run()

@@ -12,7 +12,7 @@ from urllib2 import urlopen
 from urlparse import urljoin, urlsplit
 from BeautifulSoup import BeautifulSoup as BS
 
-BASE_URLS = ["http://www.wowporngirls.com","http://www.wowgirlsblog.com"]
+BASE_URLS = ["http://www.wowpornblog.com","http://www.wowgirlsblog.com"]
 XXX_URL   = "http://www.wowporn.xxx"
 def _urls(path):
     '''Returns a full url for the given path'''            
@@ -42,17 +42,22 @@ def get_tags(url):
         print "Opening", u
         html = _html(u)
         
-        subjs = html.find("ul",  {'class':'wp-tag-cloud'}).findAll('li')
-
-        for subj in subjs:
-            lnk = subj.a
-            _url = unquote(lnk['href'])
-            if _url not in urls:
-                urls.add(_url)
-                items.append({
-                    'name': "%s (%s)" % (lnk.text, urlsplit(u).netloc),
-                    'url': _url,
-                })
+        letters = html.findAll("div",  {'class':'tagindex'})
+        
+        print("LETTERS", letters)
+        
+        for l in letters:
+            subjs = l.find("ul").findAll('li')
+    
+            for subj in subjs:
+                lnk = subj.a
+                _url = unquote(lnk['href'])
+                if _url not in urls:
+                    urls.add(_url)
+                    items.append({
+                        'name': "%s (%s)" % (lnk.text, urlsplit(u).netloc),
+                        'url': _url,
+                    })
 
     return items
 
@@ -74,16 +79,12 @@ def get_girls(url):
         subjs = html.findAll('li', {'class' :"border-radius-5 box-shadow"})
 
         for subj in subjs:
-            _runtime = subj.find('div', {'class':"time-infos"}).text
-            if not ":" in _runtime:
-                continue
-
             lnk = subj.a
             _url = unquote(lnk['href'])
             if _url not in urls:
                 urls.add(_url)
                 items.append({
-                    'name': lnk['title'], #get_girl_name(url),
+                    'name': lnk['title'],
                     'url': _url,
                     'thumbnail' : subj.img['src'],
                 })
